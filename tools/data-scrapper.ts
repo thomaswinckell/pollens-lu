@@ -97,7 +97,7 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
     const allRatesJsonFilePath = './src/data/pollens-rates/all.json';
     const sleepTimeBetweenFetch = 500;
 
-    const startDate = scrapLatestDataOnly ? subWeeks(new Date(), 5) : new Date(1991, 0); // there's no data before 1991
+    const startDate = scrapLatestDataOnly ? subWeeks(new Date(), 5) : new Date(1992, 0); // there's no data before 1992
     let endDate: Date | undefined;
     let currentDate = startDate;
 
@@ -137,6 +137,25 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
     console.log('Scrapping done. Writing JSON files...');
 
     fs.writeFileSync(allRatesJsonFilePath, JSON.stringify(data, null, 0));
+
+    const dataPerYear: {[year: string]: PollensRates} = {};
+
+    Object.keys(data).forEach(pollenId => {
+      Object.keys(data[pollenId]).forEach(date => {
+        const year = parse(date, 'yyyy-MM-dd', new Date()).getFullYear();
+        if(!dataPerYear[year]) {
+          dataPerYear[year] = {};
+        }
+        if(!dataPerYear[year][pollenId]) {
+          dataPerYear[year][pollenId] = {};
+        }
+        dataPerYear[year][pollenId][date] = data[pollenId][date];
+      });
+    });
+
+    Object.keys(dataPerYear).forEach(year => {
+      fs.writeFileSync(`./src/data/pollens-rates/${year}.json`, JSON.stringify(dataPerYear[year], null, 0));
+    })
 
   } catch (e) {
     console.log(e);
