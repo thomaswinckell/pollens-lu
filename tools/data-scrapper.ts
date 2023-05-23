@@ -2,7 +2,7 @@ import fetch from 'node-fetch-retry';
 import { parse, isValid, isBefore, getWeek, addWeeks, subWeeks, getWeekYear, startOfWeek } from 'date-fns';
 import { JSDOM } from 'jsdom';
 import { PollenLevel } from '../src/models/PollenLevel';
-import { PollensData } from '../src/models/PollensData';
+import { PollensRates } from '../src/models/PollensRates';
 import * as fs from 'fs';
 
 const getPageUrl = (year: number, week: number) => `http://www.pollen.lu/index.php?qsPage=data&year=${year}&week=${week}`;
@@ -55,7 +55,7 @@ const getPollenLevelFromColor = (rate: number, color?: string): PollenLevel => {
   return PollenLevel.NON_ALLERGENIC;
 };
 
-const extractPollensData = (document: Document, data: PollensData): void => {
+const extractPollensData = (document: Document, data: PollensRates): void => {
   const firstLineTrSelector = `${CONTENT_SELECTOR} table tr:nth-of-type(${1})`;
   const dates: string[] = [];
   // get dates
@@ -94,14 +94,14 @@ const extractPollensData = (document: Document, data: PollensData): void => {
     console.log('Starting scrapping...');
 
     const scrapLatestDataOnly = process.argv.slice(2)[0] === '--latest'; // scrap 5 latest weeks only
-    const jsonFilePath = './src/data/pollens-rates.json';
+    const allRatesJsonFilePath = './src/data/pollens-rates/all.json';
     const sleepTimeBetweenFetch = 500;
 
     const startDate = scrapLatestDataOnly ? subWeeks(new Date(), 5) : new Date(1991, 0); // there's no data before 1991
     let endDate: Date | undefined;
     let currentDate = startDate;
 
-    const data: PollensData = scrapLatestDataOnly ? JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8')) : {};
+    const data: PollensRates = scrapLatestDataOnly ? JSON.parse(fs.readFileSync(allRatesJsonFilePath, 'utf-8')) : {};
     let previousWeek = -1;
 
     while (!endDate || isBefore(currentDate, endDate)) {
@@ -134,9 +134,9 @@ const extractPollensData = (document: Document, data: PollensData): void => {
       await sleep(sleepTimeBetweenFetch);
     }
 
-    console.log('Scrapping done. Writing JSON file...');
+    console.log('Scrapping done. Writing JSON files...');
 
-    fs.writeFileSync(jsonFilePath, JSON.stringify(data, null, 2));
+    fs.writeFileSync(allRatesJsonFilePath, JSON.stringify(data, null, 0));
 
   } catch (e) {
     console.log(e);
