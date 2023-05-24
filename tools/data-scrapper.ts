@@ -4,6 +4,7 @@ import { JSDOM } from 'jsdom';
 import { PollenLevel } from '../src/models/PollenLevel';
 import { PollensRates } from '../src/models/PollensRates';
 import * as fs from 'fs';
+import { DATA_MIN_YEAR } from '../src/constants/DataConstants';
 
 const getPageUrl = (year: number, week: number) => `http://www.pollen.lu/index.php?qsPage=data&year=${year}&week=${week}`;
 
@@ -97,7 +98,7 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
     const allRatesJsonFilePath = './src/data/pollens-rates/all.json';
     const sleepTimeBetweenFetch = 500;
 
-    const startDate = scrapLatestDataOnly ? subWeeks(new Date(), 5) : new Date(1992, 0); // there's no data before 1992
+    const startDate = scrapLatestDataOnly ? subWeeks(new Date(), 5) : new Date(DATA_MIN_YEAR, 0);
     let endDate: Date | undefined;
     let currentDate = startDate;
 
@@ -154,7 +155,7 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
     });
 
     Object.keys(dataPerYear).forEach(year => {
-      fs.writeFileSync(`./src/data/pollens-rates/${year}.json`, JSON.stringify(dataPerYear[year], null, 0));
+      fs.writeFileSync(`./src/data/pollens-rates/by-year/${year}.json`, JSON.stringify(dataPerYear[year], null, 0));
     })
 
   } catch (e) {
