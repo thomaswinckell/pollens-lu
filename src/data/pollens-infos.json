@@ -1,0 +1,101 @@
+{
+  "ambrosia": {
+    "allergenic": true
+  },
+  "artemisia": {
+    "allergenic": true
+  },
+  "asteraceae": {
+    "allergenic": false
+  },
+  "alnus": {
+    "allergenic": true
+  },
+  "betula": {
+    "allergenic": true
+  },
+  "ericaceae": {
+    "allergenic": false
+  },
+  "carpinus": {
+    "allergenic": false
+  },
+  "castanea": {
+    "allergenic": false
+  },
+  "quercus": {
+    "allergenic": true
+  },
+  "chenopodium": {
+    "allergenic": true
+  },
+  "cupressaceae": {
+    "allergenic": false
+  },
+  "acer": {
+    "allergenic": false
+  },
+  "fraxinus": {
+    "allergenic": true
+  },
+  "gramineae": {
+    "allergenic": true
+  },
+  "fagus": {
+    "allergenic": false
+  },
+  "juncaceae": {
+    "allergenic": false
+  },
+  "aesculus": {
+    "allergenic": false
+  },
+  "larix": {
+    "allergenic": false
+  },
+  "corylus": {
+    "allergenic": true
+  },
+  "juglans": {
+    "allergenic": false
+  },
+  "umbellifereae": {
+    "allergenic": false
+  },
+  "ulmus": {
+    "allergenic": false
+  },
+  "urtica": {
+    "allergenic": false
+  },
+  "rumex": {
+    "allergenic": false
+  },
+  "populus": {
+    "allergenic": false
+  },
+  "pinaceae": {
+    "allergenic": false
+  },
+  "plantago": {
+    "allergenic": true
+  },
+  "platanus": {
+    "allergenic": false
+  },
+  "salix": {
+    "allergenic": false
+  },
+  "cyperaceae": {
+    "allergenic": false
+  },
+  "filipendula": {
+    "allergenic": false
+  },
+  "sambucus": {
+    "allergenic": false
+  },
+  "tilia": {
+    "allergenic": false
+  }
+}
