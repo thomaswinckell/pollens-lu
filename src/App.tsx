@@ -1,44 +1,25 @@
-import { Card, LineChart, Title } from '@tremor/react';
-import { uniq } from 'remeda';
-import { parse } from 'date-fns';
-import pollenRatesJson from './data/pollens-rates/all.json';
-import pollenInfosJson from './data/pollens-infos.json';
-import { PollensRates } from './models/PollensRates';
+import { RatesChart } from './components/RatesChart';
+import { Card, Grid, Title } from '@tremor/react';
 
-const pollensRates = pollenRatesJson as PollensRates;
-const pollenInfos = pollenInfosJson as {[pollenId: string]: {allergenic: boolean}};
+export const App = () => {
 
-const year = 2023;
-
-const pollensIds = Object.keys(pollensRates).filter(id => pollenInfos[id].allergenic);
-const uniqDates = uniq(pollensIds.flatMap(id => Object.keys(pollensRates[id])));
-const yearDates = uniqDates.filter(d => parse(d, 'yyyy-MM-dd', new Date()).getFullYear() === year);
-
-const chartData = yearDates.map(date => ({
-  date,
-  ...pollensIds.reduce((acc, pollenId) => ({
-    ...acc,
-    [pollenId]: pollensRates[pollenId][date].rate
-  }), {})
-}));
-
-const dataFormatter = (number: number) =>
-  `${Intl.NumberFormat("us").format(number).toString()}%`;
-
-export function App() {
   return (
-    <>
-      <Card>
-        <Title>Pollens</Title>
-        <LineChart
-          className="mt-6"
-          data={ chartData }
-          index="date"
-          categories={ pollensIds }
-          valueFormatter={ dataFormatter }
-          yAxisWidth={ 40 }
-        />
-      </Card>
-    </>
+    <main className="p4 sm:p-10">
+      <Title>Pollens au Luxembourg</Title>
+      <Grid numColsMd={2} numColsLg={3} className="gap-6 mt-6">
+        <Card>
+          <div className="h-28" />
+        </Card>
+        <Card>
+          <div className="h-28" />
+        </Card>
+        <Card>
+          <div className="h-28" />
+        </Card>
+      </Grid>
+      <div className="mt-6">
+        <RatesChart/>
+      </div>
+    </main>
   );
 }
