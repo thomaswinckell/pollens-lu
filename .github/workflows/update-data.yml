@@ -1,9 +1,7 @@
 name: Scrap latest data from pollen.lu, commit changes and deploy
-
 on:
-workflow_dispatch:
-schedule:
-  - cron: '0 * * * *'
+  schedule:
+    - cron: '0 * * * *'
 
 concurrency:
   group: "pages"
