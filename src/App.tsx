@@ -1,4 +1,4 @@
-import { Text, Card, Dropdown, DropdownItem, Grid, Title } from '@tremor/react';
+import { Text, Card, Dropdown, DropdownItem, Grid, Title, Divider } from '@tremor/react';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { useEffect, useState } from 'react';
 import { RatesChart } from './components/RatesChart';
@@ -61,9 +61,17 @@ export const App = () => {
             <div className='h-28' />
           </Card>
         </Grid>
-        <div className='mt-6'>
+        <div className='mt-6 mb-8'>
           <RatesChart />
         </div>
+        <footer className='pt-8'>
+          <Divider />
+          <div className='flex flex-1 pt-8'>
+            <Text className='m-auto hover:underline'>
+              <a href='https://github.com/thomaswinckell/pollens-lu' target='_blank'>Checkout the code from GitHub</a>
+            </Text>
+          </div>
+        </footer>
       </main>
     </IntlProvider>
   );
