@@ -20,6 +20,8 @@ concurrency:
 jobs:
   update-data:
     runs-on: ubuntu-latest
+    outputs:
+      data-changed: ${{ steps.verify_diff.outputs.changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -35,13 +37,19 @@ jobs:
         run: npm i
       - name: Scrap latest data from pollen.lu
         run: npm run scrap-latest-data
+      - name: Check if there are any changes
+        id: verify_diff
+        run: |
+         git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
       - name: Commit updated data
+        if: steps.verify_diff.outputs.changed == 'true'
         run: |
           git config --global user.name 'Pollen.lu scrapper'
           git config --global user.email 'pollen.lu-scrapper@users.noreply.github.com'
           git commit -am "Update pollen.lu data"
           git push
       - name: Upload artifact
+        if: steps.verify_diff.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v1
         with:
           path: ./dist
@@ -54,4 +62,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
+        if: needs.update-data.outputs.data-changed == 'true'
         uses: actions/deploy-pages@v2
