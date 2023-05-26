@@ -114,6 +114,7 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
     let currentDate = startDate;
 
     const data: PollensRates = scrapLatestDataOnly ? JSON.parse(fs.readFileSync(allRatesJsonFilePath, 'utf-8')) : {};
+    let previousWeek = -1;
     let yearWeekStartIndex = 0;
 
     while (!endDate || isBefore(currentDate, endDate)) {
@@ -127,7 +128,10 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
       } else {
         yearWeekStartIndex = 0;
       }
-      const week = getWeek(currentDate) - 1 + yearWeekStartIndex;
+      let week = getWeek(currentDate) - 1 + yearWeekStartIndex;
+      if (year !== getWeekYear(currentDate)) {
+        week = previousWeek + 1;
+      }
 
       console.log(`Getting data for year ${year} / week ${week}`);
 
@@ -145,6 +149,7 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
       } else {
         currentDate = new Date(getWeekYear(currentDate), 0);
       }
+      previousWeek = week;
 
       await sleep(sleepTimeBetweenFetch);
     }
