@@ -84,7 +84,7 @@ const shouldDisplayPeriod = (period: Period): boolean => {
 export const RatesChart = () => {
   const intl = useIntl();
   const [loading, setLoading] = useState<boolean>(true);
-  const [period, setPeriod] = useState<Period | number>(shouldDisplayPeriod(Period.LAST_30_DAYS) ? Period.LAST_30_DAYS : CURRENT_YEAR);
+  const [period, setPeriod] = useState<Period | number>(shouldDisplayPeriod(Period.LAST_10_DAYS) ? Period.LAST_10_DAYS : CURRENT_YEAR);
   const [pollenType, setPollenType] = useState<PollenType | string>(PollenType.ALLERGENIC);
   const [chartData, setChartData] = useState<RatesChartData>({ data: [], categories: [] });
 
