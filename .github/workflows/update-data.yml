@@ -8,20 +8,9 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "update-data"
-  cancel-in-progress: true
-
 jobs:
   update-data:
     runs-on: ubuntu-latest
-    outputs:
-      data-changed: ${{ steps.verify_diff.outputs.changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -48,19 +37,3 @@ jobs:
           git config --global user.email 'pollen.lu-scrapper@users.noreply.github.com'
           git commit -am "Update pollen.lu data"
           git push
-      - name: Upload artifact
-        if: steps.verify_diff.outputs.changed == 'true'
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./dist
-
-  deploy:
-    needs: update-data
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        if: needs.update-data.outputs.data-changed == 'true'
-        uses: actions/deploy-pages@v2
