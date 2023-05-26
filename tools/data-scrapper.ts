@@ -1,5 +1,16 @@
 import fetch from 'node-fetch-retry';
-import { parse, isValid, isBefore, getWeek, addWeeks, subWeeks, getWeekYear, startOfWeek } from 'date-fns';
+import {
+  parse,
+  isValid,
+  isBefore,
+  getWeek,
+  addWeeks,
+  subWeeks,
+  getWeekYear,
+  startOfWeek,
+  isSameDay,
+  addDays, isSameWeek, startOfYear,
+} from 'date-fns';
 import { JSDOM } from 'jsdom';
 import { PollenLevel } from '../src/models/PollenLevel';
 import { PollensRates } from '../src/models/PollensRates';
@@ -98,21 +109,25 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
     const allRatesJsonFilePath = './src/data/pollens-rates/all.json';
     const sleepTimeBetweenFetch = 500;
 
-    const startDate = scrapLatestDataOnly ? subWeeks(new Date(), 5) : new Date(DATA_MIN_YEAR, 0);
+    const startDate = scrapLatestDataOnly ? startOfWeek(subWeeks(new Date(), 5)) : new Date(DATA_MIN_YEAR, 0);
     let endDate: Date | undefined;
     let currentDate = startDate;
 
     const data: PollensRates = scrapLatestDataOnly ? JSON.parse(fs.readFileSync(allRatesJsonFilePath, 'utf-8')) : {};
-    let previousWeek = -1;
+    let yearWeekStartIndex = 0;
 
     while (!endDate || isBefore(currentDate, endDate)) {
       console.log(currentDate.toDateString());
-      // they count weeks differently in pollen.lu
       const year = currentDate.getFullYear();
-      let week = getWeek(currentDate) - 1;
-      if (year !== getWeekYear(currentDate)) {
-        week = previousWeek + 1;
+      // they count weeks differently in pollen.lu
+      // if the first day of the year if also the first day of a full week, we start at index 1
+      const firstDayOfYear = startOfYear(currentDate);
+      if(isSameWeek(firstDayOfYear, addDays(firstDayOfYear, 6))) {
+        yearWeekStartIndex = 1;
+      } else {
+        yearWeekStartIndex = 0;
       }
+      const week = getWeek(currentDate) - 1 + yearWeekStartIndex;
 
       console.log(`Getting data for year ${year} / week ${week}`);
 
@@ -130,7 +145,6 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
       } else {
         currentDate = new Date(getWeekYear(currentDate), 0);
       }
-      previousWeek = week;
 
       await sleep(sleepTimeBetweenFetch);
     }
@@ -156,7 +170,7 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
 
     Object.keys(dataPerYear).forEach(year => {
       fs.writeFileSync(`./src/data/pollens-rates/by-year/${year}.json`, JSON.stringify(dataPerYear[year], null, 0));
-    })
+    });
 
   } catch (e) {
     console.log(e);
