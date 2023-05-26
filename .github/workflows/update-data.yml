@@ -1,7 +1,8 @@
 name: Scrap latest data from pollen.lu, commit changes and deploy
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '*/5 * * * *' # every 5 min
+    # - cron: '0 * * * *' # every hour
 
 concurrency:
   group: "pages"
