@@ -24,7 +24,7 @@ jobs:
       - name: NPM install
         run: npm i
       - name: Build
-        run: npm run build
+        run: npm run ci-build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
@@ -38,4 +38,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v2

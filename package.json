@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "ci-build": "tsc && vite build --base=/pollens-lu/",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "scrap-all-data": "vite-node ./tools/data-scrapper.ts",
