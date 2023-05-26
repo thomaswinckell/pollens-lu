@@ -1,0 +1,53 @@
+name: Scrap latest data from pollen.lu, commit changes and deploy
+
+on:
+workflow_dispatch:
+schedule:
+  - cron: '0 * * * *'
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: NPM install
+        run: npm i
+      - name: Scrap latest data from pollen.lu
+        run: npm run scrap-latest-data
+      - name: Commit updated data
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT }}
+        run: |
+          git config --global user.name 'Pollen.lu scrapper'
+          git config --global user.email 'pollen.lu-scrapper@users.noreply.github.com'
+          git commit -am "Update pollen.lu data"
+          git push
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./dist
+
+  deploy:
+    needs: update-data
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
