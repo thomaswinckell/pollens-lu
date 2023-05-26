@@ -4,6 +4,9 @@ on:
     # - cron: '*/15 * * * *' # every 15 min
     # - cron: '0 * * * *' # every hour
     - cron: '0 */3 * * *' # every 3 hours
+  push:
+    branches:
+      - main
 
 concurrency:
   group: "update-data"
