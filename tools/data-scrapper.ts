@@ -8,13 +8,14 @@ import {
   subWeeks,
   getWeekYear,
   startOfWeek,
-  addDays, isSameWeek, startOfYear, format,
+  addDays, isSameWeek, startOfYear, format, isAfter, startOfDay,
 } from 'date-fns';
 import { JSDOM } from 'jsdom';
 import { PollenLevel } from '../src/models/PollenLevel';
 import { PollensRates } from '../src/models/PollensRates';
 import * as fs from 'fs';
 import { DATA_DATE_FORMAT, DATA_MIN_YEAR } from '../src/constants/DataConstants';
+import { parseData } from '@tremor/react/dist/components/chart-elements/DonutChart/inputParser';
 
 const getPageUrl = (year: number, week: number) => `http://www.pollen.lu/index.php?qsPage=data&year=${year}&week=${week}`;
 
@@ -66,7 +67,7 @@ const getPollenLevelFromColor = (rate: number, color?: string): PollenLevel => {
   return PollenLevel.NON_ALLERGENIC;
 };
 
-const extractPollensData = (document: Document, data: PollensRates): void => {
+const extractPollensData = (document: Document, data: PollensRates, endDate: Date): void => {
   const firstLineTrSelector = `${CONTENT_SELECTOR} table tr:nth-of-type(${1})`;
   const dates: string[] = [];
   // get dates
@@ -88,14 +89,16 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
     if (!data[latinId]) {
       data[latinId] = {};
     }
-    dates.forEach((date, dateIndex) => {
-      const tdSelector = `${trSelector} td:nth-child(${dateIndex + 5})`;
-      const rate = parseFloat(document.querySelector(tdSelector).textContent);
-      data[latinId][date] = {
-        rate,
-        level: getPollenLevelFromColor(rate, document.querySelector(`${tdSelector} font`)?.attributes['color']?.value),
-      };
-    });
+    dates
+      .filter(date => !isAfter(startOfDay(parse(date, DATA_DATE_FORMAT, new Date())), startOfDay(endDate)))
+      .forEach((date, dateIndex) => {
+        const tdSelector = `${trSelector} td:nth-child(${dateIndex + 5})`;
+        const rate = parseFloat(document.querySelector(tdSelector).textContent);
+        data[latinId][date] = {
+          rate,
+          level: getPollenLevelFromColor(rate, document.querySelector(`${tdSelector} font`)?.attributes['color']?.value),
+        };
+      });
   });
 };
 
@@ -142,7 +145,7 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
 
       endDate = extractUpdateDate(document);
 
-      extractPollensData(document, data);
+      extractPollensData(document, data, endDate);
 
       if (year === getWeekYear(currentDate)) {
         currentDate = startOfWeek(addWeeks(currentDate, 1));
