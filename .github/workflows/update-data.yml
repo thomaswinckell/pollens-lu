@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT }}
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -26,9 +28,6 @@ jobs:
       - name: Scrap latest data from pollen.lu
         run: npm run scrap-latest-data
       - name: Commit updated data
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.PAT }}
         run: |
           git config --global user.name 'Pollen.lu scrapper'
           git config --global user.email 'pollen.lu-scrapper@users.noreply.github.com'
