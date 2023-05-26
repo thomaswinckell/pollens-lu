@@ -1,6 +1,7 @@
 {
   "page.title": "Pollens au Luxembourg",
   "dashboard.title": "Pollens au Luxembourg",
+  "dashboard.updated-date": "Mis à jour le {date}",
   "rates-chart.title": "Grains par m³ d'air",
   "rates-chart.title-for": "pour",
   "rates-chart.pollen-type.ALL": "toutes les plantes",

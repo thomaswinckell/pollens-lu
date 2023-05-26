@@ -8,14 +8,13 @@ import {
   subWeeks,
   getWeekYear,
   startOfWeek,
-  isSameDay,
-  addDays, isSameWeek, startOfYear,
+  addDays, isSameWeek, startOfYear, format,
 } from 'date-fns';
 import { JSDOM } from 'jsdom';
 import { PollenLevel } from '../src/models/PollenLevel';
 import { PollensRates } from '../src/models/PollensRates';
 import * as fs from 'fs';
-import { DATA_MIN_YEAR } from '../src/constants/DataConstants';
+import { DATA_DATE_FORMAT, DATA_MIN_YEAR } from '../src/constants/DataConstants';
 
 const getPageUrl = (year: number, week: number) => `http://www.pollen.lu/index.php?qsPage=data&year=${year}&week=${week}`;
 
@@ -118,12 +117,13 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
     let yearWeekStartIndex = 0;
 
     while (!endDate || isBefore(currentDate, endDate)) {
-      console.log(currentDate.toDateString());
+
       const year = currentDate.getFullYear();
+
       // they count weeks differently in pollen.lu
       // if the first day of the year if also the first day of a full week, we start at index 1
       const firstDayOfYear = startOfYear(currentDate);
-      if(isSameWeek(firstDayOfYear, addDays(firstDayOfYear, 6))) {
+      if (isSameWeek(firstDayOfYear, addDays(firstDayOfYear, 6))) {
         yearWeekStartIndex = 1;
       } else {
         yearWeekStartIndex = 0;
@@ -158,15 +158,15 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
 
     fs.writeFileSync(allRatesJsonFilePath, JSON.stringify(data, null, 0));
 
-    const dataPerYear: {[year: string]: PollensRates} = {};
+    const dataPerYear: { [year: string]: PollensRates } = {};
 
     Object.keys(data).forEach(pollenId => {
       Object.keys(data[pollenId]).forEach(date => {
-        const year = parse(date, 'yyyy-MM-dd', new Date()).getFullYear();
-        if(!dataPerYear[year]) {
+        const year = parse(date, DATA_DATE_FORMAT, new Date()).getFullYear();
+        if (!dataPerYear[year]) {
           dataPerYear[year] = {};
         }
-        if(!dataPerYear[year][pollenId]) {
+        if (!dataPerYear[year][pollenId]) {
           dataPerYear[year][pollenId] = {};
         }
         dataPerYear[year][pollenId][date] = data[pollenId][date];
@@ -176,6 +176,10 @@ const extractPollensData = (document: Document, data: PollensRates): void => {
     Object.keys(dataPerYear).forEach(year => {
       fs.writeFileSync(`./src/data/pollens-rates/by-year/${year}.json`, JSON.stringify(dataPerYear[year], null, 0));
     });
+
+    if (endDate) {
+      fs.writeFileSync(`./src/data/metadata.json`, JSON.stringify({ updateDate: format(endDate, DATA_DATE_FORMAT) }, null, 0));
+    }
 
   } catch (e) {
     console.log(e);
