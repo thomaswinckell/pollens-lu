@@ -1,6 +1,6 @@
 import { Card, Dropdown, DropdownItem, LineChart, Title } from '@tremor/react';
 import { range, uniq } from 'remeda';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactElement } from 'react';
 import { isAfter, parse, subDays, startOfYear } from 'date-fns';
 import { DATA_DATE_FORMAT, DATA_MIN_YEAR } from '../constants/DataConstants';
 import {
@@ -89,7 +89,7 @@ export const RatesChart = () => {
     ...range(DATA_MIN_YEAR, CURRENT_YEAR + 1).reverse().map(year => (
       <DropdownItem value={year.toString()} text={`en ${year}`} key={year} />
     )),
-  ].filter(Boolean);
+  ].filter(Boolean) as ReactElement[];
 
   // TODO translate and sort POLLENS_IDS alphabetically
   const pollensDropdownChildren = [

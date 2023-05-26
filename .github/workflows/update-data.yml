@@ -1,4 +1,4 @@
-name: Scrap latest data from pollen.lu, commit changes and deploy
+name: Scrap latest data from pollen.lu and commit changes
 on:
   schedule:
     # - cron: '*/15 * * * *' # every 15 min
@@ -20,8 +20,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
       - name: NPM install
         run: npm i
       - name: Scrap latest data from pollen.lu
