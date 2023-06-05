@@ -1,10 +1,12 @@
-import { Text, Card, Dropdown, DropdownItem, Grid, Title, Divider } from '@tremor/react';
+import { Divider, Dropdown, DropdownItem, Text, Title } from '@tremor/react';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { useEffect, useState } from 'react';
 import { RatesChart } from './components/RatesChart';
 import { Spin } from './components/Spin';
 import { Head } from './components/Head';
 import { UPDATE_DATE } from './api/PollensApi';
+import { RatesCallout } from './components/RatesCallout';
+import { PollenType } from './models/PollenType';
 
 const SUPPORTED_LOCALES = ['en', 'fr'];
 const DEFAULT_LOCALE = 'en';
@@ -17,6 +19,7 @@ const getUserPreferredLanguage = () => {
 export const App = () => {
   const [locale, setLocale] = useState<string>(getUserPreferredLanguage());
   const [messages, setMessages] = useState<Record<string, string> | undefined>();
+  const [currentPollenType, setCurrentPollenType] = useState<PollenType | string>(PollenType.ALLERGENIC);
 
   useEffect(() => {
     setMessages(undefined);
@@ -50,19 +53,11 @@ export const App = () => {
           </Dropdown>
         </div>
         <Text className='italic'><FormattedMessage id='dashboard.updated-date' values={{ date: updateDate }} /></Text>
-        <Grid numColsMd={2} numColsLg={3} className='gap-6 mt-6'>
-          <Card>
-            <div className='h-28' />
-          </Card>
-          <Card>
-            <div className='h-28' />
-          </Card>
-          <Card>
-            <div className='h-28' />
-          </Card>
-        </Grid>
-        <div className='mt-6 mb-8'>
-          <RatesChart />
+        <div className='mt-6'>
+          <RatesCallout setCurrentPollen={setCurrentPollenType} />
+        </div>
+        <div className='mt-6 mb-8' id='rates-chart'>
+          <RatesChart currentPollenType={currentPollenType} setCurrentPollenType={setCurrentPollenType} />
         </div>
         <footer className='pt-8'>
           <Divider />

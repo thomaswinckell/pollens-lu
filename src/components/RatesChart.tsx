@@ -1,6 +1,6 @@
 import { Card, Dropdown, DropdownItem, LineChart, Title } from '@tremor/react';
 import { range, uniq } from 'remeda';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FC } from 'react';
 import { isAfter, parse, subDays, startOfYear } from 'date-fns';
 import { DATA_DATE_FORMAT, DATA_MIN_YEAR } from '../constants/DataConstants';
 import {
@@ -13,6 +13,7 @@ import { Spin } from './Spin';
 import { PollensRates } from '../models/PollensRates';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { IntlShape } from 'react-intl/src/types';
+import { PollenType } from '../models/PollenType';
 
 type RatesChartData = {
   data: { date: string; [pollenId: string]: string }[];
@@ -27,12 +28,6 @@ enum Period {
   LAST_30_DAYS = -30,
   LAST_60_DAYS = -60,
   LAST_90_DAYS = -90,
-}
-
-enum PollenType {
-  ALL = 'ALL',
-  NON_ALLERGENIC = 'NON_ALLERGENIC',
-  ALLERGENIC = 'ALLERGENIC',
 }
 
 export const getPollensListFromPollenType = (pollen: PollenType | string): string[] => {
@@ -81,21 +76,25 @@ const shouldDisplayPeriod = (period: Period): boolean => {
   return isAfter(subDays(NOW, -period), startOfYear(NOW));
 };
 
-export const RatesChart = () => {
+export interface RatesChartProps {
+  currentPollenType: PollenType | string;
+  setCurrentPollenType: (pollenId: PollenType | string) => void;
+}
+
+export const RatesChart: FC<RatesChartProps> = ({ currentPollenType, setCurrentPollenType }) => {
   const intl = useIntl();
   const [loading, setLoading] = useState<boolean>(true);
   const [period, setPeriod] = useState<Period | number>(shouldDisplayPeriod(Period.LAST_10_DAYS) ? Period.LAST_10_DAYS : CURRENT_YEAR);
-  const [pollenType, setPollenType] = useState<PollenType | string>(PollenType.ALLERGENIC);
   const [chartData, setChartData] = useState<RatesChartData>({ data: [], categories: [] });
 
   useEffect(() => {
     setLoading(true);
     (async () => {
-      const chartData = await computeChartData(period, pollenType, intl);
+      const chartData = await computeChartData(period, currentPollenType, intl);
       setChartData(chartData);
       setLoading(false);
     })();
-  }, [period, pollenType, intl.locale]);
+  }, [period, currentPollenType, intl.locale]);
 
   const periodDropdownChildren = [
     ...Object.entries(Period).filter(([, periodValue]) => shouldDisplayPeriod(periodValue as Period)).map(([periodKey, periodValue]) => (
@@ -136,8 +135,8 @@ export const RatesChart = () => {
         <Title><FormattedMessage id='rates-chart.title-for' /></Title>
         <Dropdown
           className='max-w-[15rem] ml-2 mr-2 -mt-1'
-          onValueChange={(value) => setPollenType(value)}
-          value={pollenType}
+          onValueChange={(value) => setCurrentPollenType(value)}
+          value={currentPollenType}
         >
           {pollensDropdownChildren}
         </Dropdown>
