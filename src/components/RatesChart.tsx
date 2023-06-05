@@ -93,8 +93,8 @@ export const RatesChart = () => {
     (async () => {
       const chartData = await computeChartData(period, pollenType, intl);
       setChartData(chartData);
+      setLoading(false);
     })();
-    setLoading(false);
   }, [period, pollenType, intl.locale]);
 
   const periodDropdownChildren = [
