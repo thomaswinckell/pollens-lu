@@ -78,6 +78,11 @@ export const App = () => {
               <a href='https://github.com/thomaswinckell/pollens-lu' target='_blank'>Checkout the code from GitHub</a>
             </Text>
           </div>
+          <div className='flex flex-1 pt-8'>
+            <Text className='m-auto hover:underline'>
+              <a href="https://www.flaticon.com/free-icons/bee" title="bee icons">Bee icons created by Freepik - Flaticon</a>
+            </Text>
+          </div>
         </footer>
       </main>
     </IntlProvider>
