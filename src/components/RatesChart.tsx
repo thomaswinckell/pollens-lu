@@ -1,4 +1,4 @@
-import { Card, Dropdown, DropdownItem, LineChart, Title } from '@tremor/react';
+import { Card, Color, Dropdown, DropdownItem, LineChart, Title } from '@tremor/react';
 import { range, uniq } from 'remeda';
 import { useState, useEffect, FC } from 'react';
 import { isAfter, parse, subDays, startOfYear } from 'date-fns';
@@ -22,6 +22,11 @@ type RatesChartData = {
 
 const NOW = new Date();
 const CURRENT_YEAR = NOW.getFullYear();
+
+const CHART_COLORS: Color[] = [
+  'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue',
+  'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose', 'stone', 'slate', 'gray', 'zinc', 'neutral'
+];
 
 enum Period {
   LAST_10_DAYS = -10,
@@ -153,6 +158,7 @@ export const RatesChart: FC<RatesChartProps> = ({ currentPollenType, setCurrentP
           categories={chartData.categories}
           yAxisWidth={40}
           showAnimation={false}
+          colors={CHART_COLORS}
         />
       )}
     </Card>

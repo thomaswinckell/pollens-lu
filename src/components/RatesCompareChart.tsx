@@ -110,6 +110,7 @@ export const RatesCompareChart: FC<RatesCompareChartProps> = ({ currentPollenTyp
           categories={years.map(y => y.toString())}
           yAxisWidth={40}
           showAnimation={false}
+          colors={['stone', 'indigo']}
         />
       )}
     </Card>
