@@ -66,10 +66,10 @@ export const RatesCompareChart: FC<RatesCompareChartProps> = ({ currentPollenTyp
 
   return (
     <Card>
-      <div className='flex'>
+      <div className='flex flex-col md:flex-row'>
         <Title><FormattedMessage id='compare-rates-chart.title' /></Title>
         <Dropdown
-          className='max-w-[12rem] ml-2 mr-2 -mt-1'
+          className='min-w-[6rem] max-w-[6rem] mt-2 mb-2 md:mb-0 md:ml-2 md:mr-2 md:-mt-1'
           onValueChange={(value) => setYears([parseInt(value), years[1]])}
           value={years[0].toString()}
         >
@@ -79,7 +79,7 @@ export const RatesCompareChart: FC<RatesCompareChartProps> = ({ currentPollenTyp
         </Dropdown>
         <Title><FormattedMessage id='compare-rates-chart.and-year' /></Title>
         <Dropdown
-          className='max-w-[12rem] ml-2 mr-2 -mt-1'
+          className='min-w-[6rem] max-w-[6rem] mt-2 mb-2 md:mb-0 md:ml-2 md:mr-2 md:-mt-1'
           onValueChange={(value) => setYears([years[0], parseInt(value)])}
           value={years[1].toString()}
         >
@@ -89,7 +89,7 @@ export const RatesCompareChart: FC<RatesCompareChartProps> = ({ currentPollenTyp
         </Dropdown>
         <Title><FormattedMessage id='compare-rates-chart.for' /></Title>
         <Dropdown
-          className='max-w-[12rem] ml-2 mr-2 -mt-1'
+          className='max-w-[10rem] mt-2 md:ml-2 md:mr-2 md:-mt-1'
           onValueChange={(value) => setCurrentPollenType(value)}
           value={currentPollenType}
         >

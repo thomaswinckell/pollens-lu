@@ -123,10 +123,10 @@ export const RatesChart: FC<RatesChartProps> = ({ currentPollenType, setCurrentP
 
   return (
     <Card>
-      <div className='flex'>
+      <div className='flex flex-col md:flex-row'>
         <Title><FormattedMessage id='rates-chart.title' /></Title>
         <Dropdown
-          className='max-w-[12rem] ml-2 mr-2 -mt-1'
+          className='max-w-[12rem] mt-2 mb-2 md:mb-0 md:ml-2 md:mr-2 md:-mt-1'
           onValueChange={(value) => setPeriod(parseInt(value))}
           value={period.toString()}
         >
@@ -134,7 +134,7 @@ export const RatesChart: FC<RatesChartProps> = ({ currentPollenType, setCurrentP
         </Dropdown>
         <Title><FormattedMessage id='rates-chart.title-for' /></Title>
         <Dropdown
-          className='max-w-[15rem] ml-2 mr-2 -mt-1'
+          className='max-w-[15rem] mt-2 md:ml-2 md:mr-2 md:-mt-1'
           onValueChange={(value) => setCurrentPollenType(value)}
           value={currentPollenType}
         >

@@ -44,12 +44,12 @@ export const App = () => {
   return (
     <IntlProvider messages={messages} locale={locale}>
       <Head locale={locale} />
-      <main className='p4 sm:p-10'>
-        <div className='flex justify-between'>
+      <main className='p-4 sm:p-10'>
+        <div className='flex justify-between flex-col-reverse sm:flex-row'>
           <div className='flex'>
             <Title><FormattedMessage id='dashboard.title' /></Title>
           </div>
-          <Dropdown className='max-w-[10rem] ml-2 -mt-1' value={locale} onValueChange={setLocale}>
+          <Dropdown className='max-w-[10rem] mb-4 sm:mb-0 sm:ml-2 sm:-mt-1' value={locale} onValueChange={setLocale}>
             <DropdownItem value='en' text='English' />
             <DropdownItem value='fr' text='Français' />
           </Dropdown>
