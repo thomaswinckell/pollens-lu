@@ -60,18 +60,18 @@ export const App = () => {
             values={{ date: updateDate, link: (<a href="http://pollen.lu/" target='_blank' className='hover:underline'>pollen.lu</a>) }}
           />
         </Text>
-        <div className='mt-6'>
+        <div className='pt-8'>
           <RatesCallout setCurrentPollen={setCurrentPollenType} />
         </div>
-        <div className='pt-6 pb-8' id='rates-chart'>
+        <div className='pt-8' id='rates-chart'>
           <RatesChart currentPollenType={currentPollenType} setCurrentPollenType={setCurrentPollenType} />
         </div>
         {isCurrentPollenTypeAPollenId && (
-          <div className='pt-6 pb-8'>
+          <div className='pt-8'>
             <RatesCompareChart currentPollenType={currentPollenType} setCurrentPollenType={setCurrentPollenType} />
           </div>
         )}
-        <footer className='pt-8'>
+        <footer className='pt-20'>
           <Divider />
           <div className='flex flex-1 pt-8'>
             <Text className='m-auto hover:underline'>
