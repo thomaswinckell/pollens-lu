@@ -76,6 +76,7 @@ export const RatesCallout: FC<RatesCalloutProps> = ({setCurrentPollen}) => {
     <Card className='max-w-md'>
       {pollensLevels.map((data, index) => (
         <Callout
+          key={index}
           className={index === 0 ? '' : 'mt-4'}
           title={intl.formatMessage({
             id: data.maxLevel === PollenLevel.MODERATE ? 'rates-callout.moderate-levels.title' : 'rates-callout.severe-levels.title'
