@@ -14,6 +14,6 @@ jobs:
         with:
           node-version: 20
       - name: NPM install
-        run: npm i
+        run: npm ci
       - name: Build
         run: npm run ci-build

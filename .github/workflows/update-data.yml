@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 20
       - name: NPM install
-        run: npm i
+        run: npm ci
       - name: Scrap latest data from pollen.lu
         run: npm run scrap-latest-data
       - name: Check if there are any changes
