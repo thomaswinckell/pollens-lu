@@ -7,6 +7,7 @@ import { Head } from './components/Head';
 import { UPDATE_DATE } from './api/PollensApi';
 import { RatesCallout } from './components/RatesCallout';
 import { PollenType } from './models/PollenType';
+import { RatesCompareChart } from './components/RatesCompareChart';
 
 const SUPPORTED_LOCALES = ['en', 'fr'];
 const DEFAULT_LOCALE = 'en';
@@ -38,6 +39,7 @@ export const App = () => {
   }
 
   const updateDate = new Intl.DateTimeFormat(locale, { dateStyle: 'full' }).format(UPDATE_DATE);
+  const isCurrentPollenTypeAPollenId = !Object.keys(PollenType).includes(currentPollenType);
 
   return (
     <IntlProvider messages={messages} locale={locale}>
@@ -61,9 +63,14 @@ export const App = () => {
         <div className='mt-6'>
           <RatesCallout setCurrentPollen={setCurrentPollenType} />
         </div>
-        <div className='mt-6 mb-8' id='rates-chart'>
+        <div className='pt-6 pb-8' id='rates-chart'>
           <RatesChart currentPollenType={currentPollenType} setCurrentPollenType={setCurrentPollenType} />
         </div>
+        {isCurrentPollenTypeAPollenId && (
+          <div className='pt-6 pb-8'>
+            <RatesCompareChart currentPollenType={currentPollenType} setCurrentPollenType={setCurrentPollenType} />
+          </div>
+        )}
         <footer className='pt-8'>
           <Divider />
           <div className='flex flex-1 pt-8'>
