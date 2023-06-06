@@ -52,7 +52,12 @@ export const App = () => {
             <DropdownItem value='fr' text='Français' />
           </Dropdown>
         </div>
-        <Text className='italic'><FormattedMessage id='dashboard.updated-date' values={{ date: updateDate }} /></Text>
+        <Text className='italic'>
+          <FormattedMessage
+            id='dashboard.updated-date'
+            values={{ date: updateDate, link: (<a href="http://pollen.lu/" target='_blank' className='hover:underline'>pollen.lu</a>) }}
+          />
+        </Text>
         <div className='mt-6'>
           <RatesCallout setCurrentPollen={setCurrentPollenType} />
         </div>

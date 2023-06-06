@@ -1,7 +1,7 @@
 {
   "page.title": "Pollens in Luxembourg",
   "dashboard.title": "Pollens in Luxembourg",
-  "dashboard.updated-date": "Updated on {date}",
+  "dashboard.updated-date": "Source: {link}, updated on {date}",
   "rates-callout.go-to-pollen-chart": "See {pollen} pollen rates",
   "rates-callout.low-levels.title": "Low levels of pollens",
   "rates-callout.low-levels.description": "In the last five days, pollens levels were low for allergenic plants.",

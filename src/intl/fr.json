@@ -1,7 +1,7 @@
 {
   "page.title": "Pollens au Luxembourg",
   "dashboard.title": "Pollens au Luxembourg",
-  "dashboard.updated-date": "Mis à jour le {date}",
+  "dashboard.updated-date": "Source : {link}, mis à jour le {date}",
   "rates-callout.go-to-pollen-chart": "Voir les taux de pollen",
   "rates-callout.low-levels.title": "Niveaux de pollens bas",
   "rates-callout.low-levels.description": "Les cinq derniers jours, les niveaux de pollens étaient bas pour les plantes allergisantes.",
