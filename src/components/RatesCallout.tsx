@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl';
 import { FC, useEffect, useState } from 'react';
 import { Callout, Card } from '@tremor/react';
 import { Spin } from './Spin';
-import { ALLERGENIC_POLLENS_IDS, getPollensRateByYear } from '../api/PollensApi';
+import { ALLERGENIC_POLLENS_IDS, getPollensRateByYear, UPDATE_DATE } from '../api/PollensApi';
 import { DATA_DATE_FORMAT } from '../constants/DataConstants';
 import { differenceInCalendarDays, parse, startOfDay } from 'date-fns';
 import { PollenLevel } from '../models/PollenLevel';
@@ -16,7 +16,7 @@ export interface RatesCalloutProps {
   setCurrentPollen: (pollenId: string) => void;
 }
 
-export const RatesCallout: FC<RatesCalloutProps> = ({setCurrentPollen}) => {
+export const RatesCallout: FC<RatesCalloutProps> = ({ setCurrentPollen }) => {
   const intl = useIntl();
   const [loading, setLoading] = useState<boolean>(true);
   const [pollensLevels, setPollensLevels] = useState<AllergenicPollensLevels>([]);
@@ -32,7 +32,7 @@ export const RatesCallout: FC<RatesCalloutProps> = ({setCurrentPollen}) => {
           let maxRate = 0;
           Object.keys(currentYearRates[pollenId]).forEach(date => {
             // we take only data from the last 5 days
-            if (differenceInCalendarDays(TODAY, startOfDay(parse(date, DATA_DATE_FORMAT, new Date()))) <= 5) {
+            if (differenceInCalendarDays(UPDATE_DATE, startOfDay(parse(date, DATA_DATE_FORMAT, new Date()))) <= 5) {
               maxLevel = Math.max(maxLevel, currentYearRates[pollenId][date].level);
               maxRate = Math.max(maxRate, currentYearRates[pollenId][date].rate);
             }
@@ -79,23 +79,23 @@ export const RatesCallout: FC<RatesCalloutProps> = ({setCurrentPollen}) => {
           key={index}
           className={index === 0 ? '' : 'mt-4'}
           title={intl.formatMessage({
-            id: data.maxLevel === PollenLevel.MODERATE ? 'rates-callout.moderate-levels.title' : 'rates-callout.severe-levels.title'
+            id: data.maxLevel === PollenLevel.MODERATE ? 'rates-callout.moderate-levels.title' : 'rates-callout.severe-levels.title',
           }, {
-            pollen: intl.formatMessage({id: `pollen.${data.pollenId}`})
+            pollen: intl.formatMessage({ id: `pollen.${data.pollenId}` }),
           })}
           icon={ExclamationTriangleIcon}
           color={data.maxLevel === PollenLevel.MODERATE ? 'amber' : 'rose'}
         >
           {intl.formatMessage({
-            id: data.maxLevel === PollenLevel.MODERATE ? 'rates-callout.moderate-levels.description' : 'rates-callout.severe-levels.description'
+            id: data.maxLevel === PollenLevel.MODERATE ? 'rates-callout.moderate-levels.description' : 'rates-callout.severe-levels.description',
           }, {
-            pollen: intl.formatMessage({id: `pollen.${data.pollenId}`}).toLowerCase(),
-            maxRate: data.maxRate
+            pollen: intl.formatMessage({ id: `pollen.${data.pollenId}` }).toLowerCase(),
+            maxRate: data.maxRate,
           })}
-          <a href="#rates-chart" onClick={() => setCurrentPollen(data.pollenId)} className="underline flex mt-1">
+          <a href='#rates-chart' onClick={() => setCurrentPollen(data.pollenId)} className='underline flex mt-1'>
             {intl.formatMessage(
-              {id: `rates-callout.go-to-pollen-chart`},
-              {pollen: intl.formatMessage({id: `pollen.${data.pollenId}`}).toLowerCase()}
+              { id: `rates-callout.go-to-pollen-chart` },
+              { pollen: intl.formatMessage({ id: `pollen.${data.pollenId}` }).toLowerCase() },
             )}
           </a>
         </Callout>
