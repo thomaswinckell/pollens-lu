@@ -15,7 +15,6 @@ import { PollenLevel } from '../src/models/PollenLevel';
 import { PollensRates } from '../src/models/PollensRates';
 import * as fs from 'fs';
 import { DATA_DATE_FORMAT, DATA_MIN_YEAR } from '../src/constants/DataConstants';
-import { parseData } from '@tremor/react/dist/components/chart-elements/DonutChart/inputParser';
 
 const getPageUrl = (year: number, week: number) => `http://www.pollen.lu/index.php?qsPage=data&year=${year}&week=${week}`;
 
@@ -36,24 +35,6 @@ const extractUpdateDate = (document: Document): Date => {
   return date;
 };
 
-const extractPollensTranslations = (document: Document): { [latinId: string]: { [k in 'FR' | 'LU' | 'DE']: string } } => {
-  const res = {};
-  document.querySelectorAll(`${CONTENT_SELECTOR} table tr`).forEach((trElement, index) => {
-    // ignore first line
-    if (index === 0) {
-      return;
-    }
-    const trSelector = `${CONTENT_SELECTOR} table tr:nth-of-type(${index + 1})`;
-    const latinId = document.querySelector(`${trSelector} td:nth-of-type(2)`).textContent.toLowerCase();
-    res[latinId] = {
-      FR: document.querySelector(`${trSelector} td:nth-of-type(1)`).textContent,
-      DE: document.querySelector(`${trSelector} td:nth-of-type(3)`).textContent,
-      LU: document.querySelector(`${trSelector} td:nth-of-type(4)`).textContent,
-    };
-  });
-  return res;
-};
-
 const getPollenLevelFromColor = (rate: number, color?: string): PollenLevel => {
   if (color === 'red') {
     return rate === 0 ? PollenLevel.LOW : PollenLevel.SEVERE;
@@ -71,21 +52,21 @@ const extractPollensData = (document: Document, data: PollensRates, endDate: Dat
   const firstLineTrSelector = `${CONTENT_SELECTOR} table tr:nth-of-type(${1})`;
   const dates: string[] = [];
   // get dates
-  document.querySelectorAll(`${firstLineTrSelector} td`).forEach((tdElement, index) => {
+  document.querySelectorAll(`${firstLineTrSelector} td`).forEach((_, index) => {
     // ignore first lines
     if (index < 4) {
       return;
     }
-    dates.push(document.querySelector(`${firstLineTrSelector} td:nth-child(${index + 1})`).textContent);
+    dates.push(document.querySelector(`${firstLineTrSelector} td:nth-child(${index + 1})`)!.textContent!);
   });
   // get rates and level
-  document.querySelectorAll(`${CONTENT_SELECTOR} table tr`).forEach((trElement, lineIndex) => {
+  document.querySelectorAll(`${CONTENT_SELECTOR} table tr`).forEach((_, lineIndex) => {
     // ignore first line
     if (lineIndex < 1) {
       return;
     }
     const trSelector = `${CONTENT_SELECTOR} table tr:nth-of-type(${lineIndex + 1})`;
-    const latinId = document.querySelector(`${trSelector} td:nth-child(2)`).textContent.toLowerCase();
+    const latinId = document.querySelector(`${trSelector} td:nth-child(2)`)!.textContent!.toLowerCase();
     if (!data[latinId]) {
       data[latinId] = {};
     }
@@ -93,10 +74,10 @@ const extractPollensData = (document: Document, data: PollensRates, endDate: Dat
       .filter(date => !isAfter(startOfDay(parse(date, DATA_DATE_FORMAT, new Date())), startOfDay(endDate)))
       .forEach((date, dateIndex) => {
         const tdSelector = `${trSelector} td:nth-child(${dateIndex + 5})`;
-        const rate = parseFloat(document.querySelector(tdSelector).textContent);
+        const rate = parseFloat(document.querySelector(tdSelector)!.textContent!);
         data[latinId][date] = {
           rate,
-          level: getPollenLevelFromColor(rate, document.querySelector(`${tdSelector} font`)?.attributes['color']?.value),
+          level: getPollenLevelFromColor(rate, document.querySelector(`${tdSelector} font`)?.attributes['color' as any]?.value),
         };
       });
   });
